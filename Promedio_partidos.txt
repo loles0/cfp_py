@@ -1,0 +1,11 @@
+PPG=3
+PPE=1 
+PPP=0
+print ("-------------------------------------------------------------------")
+print ("ingrese el numero de partidos ganados, empatados y perdidos y se dara el puntaje")
+print ("-------------------------------------------------------------------")
+PG=int(input("ingrese la cantidad de partidos ganados: "))
+PE=int(input("ingrese la cantidad de partidos empatados: "))
+PP=int(input("ingrese la cantidad de partidos perdidos: "))
+PT= (PG*PPG) + (PE*PPE) + (PP*PPP)
+print ("el puntaje total del equipo es: ", PT)
