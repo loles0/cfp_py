@@ -12,40 +12,80 @@ invitados_etiqueta=tk.Label(ventana, text="ingrese la cantidad de invitados").pa
 invitados_entrada=tk.Entry(ventana)
 invitados_entrada.pack()
 evento_var=tk.StringVar()
-cumpleaños_var=tk.Radiobutton(ventana, text="cumpleaños", variable=evento_var, value="cumpleaños")
-casamiento_var=tk.Radiobutton(ventana, text="casamiento", variable=evento_var, value="casamiento")
-empresarial_var=tk.Radiobutton(ventana, text="empresarial", variable=evento_var, value="empresarial")
-servicios_var=tk.BooleanVar()
-sonido_var=tk.Checkbutton(ventana, text="Dj y sonido ($40.000)", variable=servicios_var, value="sonido")
-sonido_var.pack()
-comida_var=tk.Checkbutton(ventana, text="Cathering/comida ($80.000)", variable=servicios_var, value="comida")
-comida_var.pack()
-foto_var=tk.Checkbutton(ventana, text="Fotografia ($30.000)", variable=servicios_var, value="foto")
-foto_var.pack()
+cumpleaños_var=tk.Radiobutton(ventana, 
+                              text="cumpleaños", 
+                              variable=evento_var, 
+                              value="cumpleaños")
+casamiento_var=tk.Radiobutton(ventana, 
+                              text="casamiento", 
+                              variable=evento_var, 
+                              value="casamiento")
+empresarial_var=tk.Radiobutton(ventana, 
+                               text="empresarial", 
+                               variable=evento_var, 
+                               value="empresarial")
+sonido_var=tk.BooleanVar()
+comida_var=tk.BooleanVar()
+foto_var=tk.BooleanVar()
+sonido_checkbutton=tk.Checkbutton(ventana, 
+                          text="Dj y sonido ($40.000)", 
+                          variable=sonido_var)
+sonido_checkbutton.pack()
+comida_checkbutton=tk.Checkbutton(ventana, 
+                          text="Cathering/comida ($80.000)", 
+                          variable=comida_var)
+comida_checkbutton.pack()
+foto_checkbutton=tk.Checkbutton(ventana,
+                         text="Fotografia ($30.000)", 
+                         variable=foto_var)
+foto_checkbutton.pack()
 
-servicio=int()
-if sonido_var.get():
-    servicio += 40000
-if comida_var.get():
-    servicio += 80000
-if foto_var.get():
-    servicio += 30000
-    subtotal=invitados_entrada.get()*2000
-
-def calc ():
+def calc():
     try:
+        nombre = nombre_entrada.get()
+        invitados = int(invitados_entrada.get())
+        subtotal = invitados * 2000          # ← aquí el cambio importante
+        servicio = 0
 
-    nombre=nombre_entrada.get()
+        if sonido_var.get():
+            servicio += 40000
+        if comida_var.get():
+            servicio += 80000
+        if foto_var.get():
+            servicio += 30000
 
-    invitados=invitados_entrada.get()
-
-    if invitados > 100:
-
-        descuento=int(subtotal*0.15)
-
-        total=float(subtotal-descuento)
+        if invitados >= 100:
+            descuento = int(subtotal * 0.15)
+            total = subtotal - descuento
+            totals= total+servicio
+            resultado_etiqueta.config(
+                text=f"{nombre} por haber invitado a 100 o más personas\n"
+                     f"se le ha hecho un descuento del 15%\n"
+                     f"(-${descuento}) y el precio final queda en ${totals}"
+            )
+        else:
+            descuento = 0
+            total = subtotal
+            totals=total+servicio
+            resultado_etiqueta.config(text=f"{nombre} el total es de ${totals}")
 
     except ValueError:
-        messagebox.showerror("error", "ingrese valores correctos")
-    return
-    
+        messagebox.showerror("Error", "Ingrese valores correctos")
+
+
+boton_C=tk.Button(
+    ventana,
+    text="calcular",
+    command=calc
+).pack()
+resultado_etiqueta=tk.Label(
+    ventana,
+    text=""
+)
+resultado_etiqueta.pack()
+boton_S=tk.Button(
+    ventana,
+    text="salir",
+    command=ventana.destroy
+).pack()
+ventana.mainloop()
