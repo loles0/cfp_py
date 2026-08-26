@@ -24,7 +24,6 @@ sexo_etiqueta=tk.Label(
     ventana,
     text="seleccione su sexo"
 )
-sexo_etiqueta.pack()
 #variable que guarda la opcion elegida
 sexo_var=tk.StringVar()
 #botones de opcion
@@ -61,14 +60,11 @@ curso_combo = ttk.Combobox(
 curso_combo.pack()
 
 def mues ():
-    nombre=nombre_entrada.get().strip()
-    edad=edad_entrada.get().strip()
+    nombre=nombre_entrada.get()
+    edad=edad_entrada.get()
     sexo=sexo_var.get()
     curso=curso_combo.get()
-    if not nombre or not edad.isdigit() or int(edad) <= 0 or not sexo or not curso:
-        datos_etiqueta.config(text="complete todos los campos correctamente")
-        return
-    datos_etiqueta.config(text=f"{nombre}, de {edad} años de edad, sexo {sexo} \ndel curso {curso}, ha sido registrado en el sistema")
+    datos_etiqueta.config(text=f"{nombre}, de {edad} años de edad, sexo {sexo} \ndel curso {curso},ha sido registrado en el sistema")
 
 datos_etiqueta=tk.Label(
     ventana,
