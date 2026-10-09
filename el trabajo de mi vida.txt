@@ -1,0 +1,27 @@
+import ttkbootstrap as ttk
+from ttkbootstrap import Messagebox
+ventana=ttk.Window(themename="solar")
+ventana.title("Sistema academico")
+ventana.geometry("600x450")
+
+def nuevo_alum():
+    nuevo_alumno=ttk.Toplevel()
+    etiq=ttk.Label(nuevo_alumno, text="ingrese su nombre y apellido").pack()
+
+
+nuevo_bot=ttk.Button(ventana, text="Nuevo alumno", bootstyle="primary", command=nuevo_alum)
+nuevo_bot.pack(padx=13, pady=13)
+alumn_bot=ttk.Button(ventana, text="Alumnos", bootstyle="secondary")
+alumn_bot.pack(padx=13, pady=13)
+
+
+config_bot=ttk.Button(ventana, text="configuracion", bootstyle="secondary")
+config_bot.pack(padx=13, pady=13)
+acerca_bot=ttk.Button(ventana, text="Acerca de", bootstyle="secondary")
+acerca_bot.pack(padx=13, pady=13)
+salir_bot=ttk.Button(ventana, text="salir", command=ventana.destroy, bootstyle="warning")
+salir_bot.pack(padx=13, pady=13)
+
+
+
+ventana.mainloop()

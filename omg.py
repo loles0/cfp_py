@@ -2,7 +2,7 @@ import tkinter as tk  # Importa la librería Tkinter para crear interfaces gráf
 from tkinter import ttk  # Importa los widgets modernos de Tkinter (ttk)
 ventana = tk.Tk()  # Crea la ventana principal de la aplicación
 ventana.title("contactos")  # Coloca el título "contactos" en la ventana principal
-ventana.geometry("650x400")  # Define el tamaño inicial de la ventana: 1920x1080 px
+ventana.geometry("600x400")  # Define el tamaño inicial de la ventana: 1920x1080 px
 
 
 def apert():  # Define la función que abre la ventana para agregar contactos
