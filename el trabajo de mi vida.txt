@@ -1,26 +1,122 @@
 import ttkbootstrap as ttk
 from ttkbootstrap import Messagebox
+alumnosgg=[]
 ventana=ttk.Window(themename="solar")
 ventana.title("Sistema academico")
 ventana.geometry("600x450")
-
+ventana.minsize(600, 250)
+maldito_label=ttk.Label(ventana, text="Bienvenido al sistema academico", bootstyle="success", font=("Segoe Ui", 16, "bold")).pack(fill="x", padx=10, pady=10)
 def nuevo_alum():
     nuevo_alumno=ttk.Toplevel()
-    etiq=ttk.Label(nuevo_alumno, text="ingrese su nombre y apellido").pack()
+    nuevo_alumno.geometry("600x400")
+    nuevo_alumno.minsize(550, 350)
+    nuevo_alumno.title("nuevo alumno")
+    nuevo_alumno.grab_set()
+    nuevo_alumno.transient()
+    ttk.Label(nuevo_alumno, text="ingrese su nombre y apellido", bootstyle="success").pack(padx=13, pady=13, fill="x")
+    enter_name=ttk.Entry(nuevo_alumno)
+    enter_name.pack(padx=13, pady=13)
+    años=["1ª","2ª","3ª","4ª","5ª","6ª"]
+    añoccb=ttk.Combobox(nuevo_alumno, values=años, state="readonly")
+    añoccb.pack(padx=13, pady=13)
+    añoccb.set("1ª")
+    carreras=["ingenieria","medicina","perito","contaduria"]
+    carreraccb=ttk.Combobox(nuevo_alumno, values=carreras, state="readonly")
+    carreraccb.pack(padx=13, pady=13)
+    carreraccb.set("ingenieria")
+    def preguntigo():
+        respuesta=Messagebox.yesno("estas seguro que queres cerrar la maldita ventana?",text="seguro?", parent=nuevo_alumno)
+        if respuesta =="Yes":
+            nuevo_alumno.destroy()
+    def guardar ():
+        if enter_name.get() == "":
+                    errorsito=Messagebox.show_error( "Ingrese un usuario valido!","Error")
+                    errorsito.grab_set()
+        else:
+         nombre=enter_name.get()
+         año=añoccb.get()
+         carrera=carreraccb.get()
+         alumnon = f"{nombre} / {año} / {carrera}"
+         alumnosgg.append(alumnon)
+         nuevo_alumno.destroy()
+    botonera=ttk.Frame(nuevo_alumno).pack()
+    ttk.Button(botonera, text="Guardar", command=guardar, bootstyle="success").pack(padx=13, pady=13, fill="x", side="left")
+    ttk.Button(botonera, text="Salir", command=preguntigo, bootstyle="warning").pack(padx=13, pady=13, fill="x", side="right")
+
+            
 
 
 nuevo_bot=ttk.Button(ventana, text="Nuevo alumno", bootstyle="primary", command=nuevo_alum)
-nuevo_bot.pack(padx=13, pady=13)
-alumn_bot=ttk.Button(ventana, text="Alumnos", bootstyle="secondary")
-alumn_bot.pack(padx=13, pady=13)
+nuevo_bot.pack(fill="x",padx=13, pady=4)
+
+def alumnosss():
+    alumnardos=ttk.Toplevel(ventana)
+    alumnardos.geometry("500x300")
+    alumnardos.title("alumnos")
+    alumnardos.grab_set()
+    alumnardos.transient()
+    ttk.Label(alumnardos, text="Lista de alumnos").pack(padx=13, pady=13)
+    
+    listaa=ttk.Listbox(alumnardos)
+    listaa.pack(padx=20, fill="x")
+    for alumno in alumnosgg:
+        listaa.insert("end", alumno)
+    def borrar():
+        seleccionado = listaa.curselection()
+        if seleccionado:
+            indice=seleccionado[0]
+            del alumnosgg [indice]
+            listaa.delete(indice)
+    ttk.Button(alumnardos, text="Borrar alumno", command=borrar, bootstyle="warning").pack(padx=13, pady=13)
+    ttk.Button(alumnardos, text="Cerrar ventana", command=alumnardos.destroy, bootstyle="secondary").pack()
 
 
-config_bot=ttk.Button(ventana, text="configuracion", bootstyle="secondary")
-config_bot.pack(padx=13, pady=13)
-acerca_bot=ttk.Button(ventana, text="Acerca de", bootstyle="secondary")
-acerca_bot.pack(padx=13, pady=13)
+alumn_bot=ttk.Button(ventana, text="Alumnos", bootstyle="secondary", command=alumnosss)
+alumn_bot.pack(fill="x",padx=13, pady=4)
+
+def configggg():
+    configg=ttk.Toplevel(ventana)
+    configg.title("Configuracion")
+    configg.geometry("600x400")
+    configg.minsize(500, 300)
+    configg.grab_set()
+    configg.transient()
+    configg.focus_set()
+    ttk.Label(configg, text="Cambiar el nombre de usuario").pack()
+    usu_nom=ttk.Entry(configg)
+    usu_nom.pack()
+    def Guardarrr():
+        nombre_usuario=usu_nom.get()
+        if nombre_usuario == "":
+            errorsito=Messagebox.show_error( "Ingrese un usuario valido!","Error")
+            errorsito.grab_set()
+        else:
+            maldito_label.config(text=f"Bienvenido al sistema academico, {nombre_usuario}!")
+            configg.destroy()
+    def preguntigo():
+        respuesta=Messagebox.yesno("estas seguro que queres cerrar la maldita ventana?",text="seguro?", parent=configg)
+        if respuesta =="Yes":
+         configg.destroy()
+    botones=ttk.Frame(configg)
+    botones.pack()
+    ttk.Button(botones, text="Guardar", command=Guardarrr, bootstyle="primary").pack(padx=7,fill="x", side="left")
+    ttk.Button(botones, text="cancelar", command=preguntigo, bootstyle="warning").pack(padx=7,fill="x", side="right")
+
+        
+
+
+config_bot=ttk.Button(ventana, text="configuracion", bootstyle="secondary", command=configggg)
+config_bot.pack(fill="x",padx=13, pady=4)
+
+def acercadede():
+    acercade=ttk.Toplevel(ventana)
+    acercade.grab_set()
+    ttk.Label(acercade, text="Nombre del programa= Sistema academido.\n\n\nAutor: Milton Schwindt\n\n\n Version: 1.0 \n\n\n\n 2026", bootstyle="info").pack()
+
+acerca_bot=ttk.Button(ventana, text="Acerca de",command=acercadede, bootstyle="info")
+acerca_bot.pack(fill="x",padx=13, pady=4)
 salir_bot=ttk.Button(ventana, text="salir", command=ventana.destroy, bootstyle="warning")
-salir_bot.pack(padx=13, pady=13)
+salir_bot.pack(fill="x",padx=13, pady=4)
 
 
 

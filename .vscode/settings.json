@@ -6,5 +6,11 @@
             "packageManager": "ms-python.python:pip"
         }
     ],
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "chat.tools.terminal.autoApprove": {
+        "/^python \"el trabajo de mi vida\\.txt\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
 }
