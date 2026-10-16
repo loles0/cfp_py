@@ -1,11 +1,61 @@
 import ttkbootstrap as ttk
 from ttkbootstrap import Messagebox
-alumnosgg=[]
+import json
+from pathlib import Path
+
+ARCHIVO_DATOS = Path(__file__).with_name("datos.json")
+
+def cargar_datos():
+    try:
+        with ARCHIVO_DATOS.open("r", encoding="utf-8") as archivo:
+            datos = json.load(archivo)
+    except FileNotFoundError:
+        return {"usuario": "", "alumnos": []}
+
+    if not isinstance(datos, dict):
+        raise ValueError("El contenido debe ser un objeto JSON.")
+
+    usuario = datos.get("usuario", "")
+    alumnos = datos.get("alumnos", [])
+    if not isinstance(usuario, str) or not isinstance(alumnos, list):
+        raise ValueError("La configuración o la lista de alumnos no tienen el formato esperado.")
+    if not all(isinstance(alumno, str) for alumno in alumnos):
+        raise ValueError("Cada alumno guardado debe ser un texto.")
+
+    return {"usuario": usuario, "alumnos": alumnos}
+
 ventana=ttk.Window(themename="solar")
 ventana.title("Sistema academico")
 ventana.geometry("600x450")
 ventana.minsize(600, 250)
-maldito_label=ttk.Label(ventana, text="Bienvenido al sistema academico", bootstyle="success", font=("Segoe Ui", 16, "bold")).pack(fill="x", padx=10, pady=10)
+try:
+    datos = cargar_datos()
+except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
+    Messagebox.show_error(f"No se pudieron cargar los datos: {error}", "Error", parent=ventana)
+    ventana.destroy()
+    raise SystemExit(1)
+
+alumnosgg = datos["alumnos"]
+nombre_usuario = datos["usuario"]
+
+maldito_label=ttk.Label(
+    ventana,
+    text=f"Bienvenido al sistema academico{', ' + nombre_usuario if nombre_usuario else ''}",
+    bootstyle="success",
+    font=("Segoe Ui", 16, "bold")
+)
+maldito_label.pack(fill="x", padx=10, pady=10)
+
+def guardar_datos():
+    datos = {"usuario": nombre_usuario, "alumnos": alumnosgg}
+    try:
+        with ARCHIVO_DATOS.open("w", encoding="utf-8") as archivo:
+            json.dump(datos, archivo, ensure_ascii=False, indent=4)
+    except OSError as error:
+        Messagebox.show_error(f"No se pudieron guardar los datos: {error}", "Error", parent=ventana)
+        return False
+    return True
+
 def nuevo_alum():
     nuevo_alumno=ttk.Toplevel()
     nuevo_alumno.geometry("600x400")
@@ -30,16 +80,19 @@ def nuevo_alum():
             nuevo_alumno.destroy()
     def guardar ():
         if enter_name.get() == "":
-                    errorsito=Messagebox.show_error( "Ingrese un usuario valido!","Error")
-                    errorsito.grab_set()
+                    Messagebox.show_error("Ingrese un usuario valido!", "Error", parent=nuevo_alumno)
         else:
          nombre=enter_name.get()
          año=añoccb.get()
          carrera=carreraccb.get()
          alumnon = f"{nombre} / {año} / {carrera}"
          alumnosgg.append(alumnon)
-         nuevo_alumno.destroy()
-    botonera=ttk.Frame(nuevo_alumno).pack()
+         if guardar_datos():
+             nuevo_alumno.destroy()
+         else:
+             alumnosgg.pop()
+    botonera=ttk.Frame(nuevo_alumno)
+    botonera.pack()
     ttk.Button(botonera, text="Guardar", command=guardar, bootstyle="success").pack(padx=13, pady=13, fill="x", side="left")
     ttk.Button(botonera, text="Salir", command=preguntigo, bootstyle="warning").pack(padx=13, pady=13, fill="x", side="right")
 
@@ -65,8 +118,11 @@ def alumnosss():
         seleccionado = listaa.curselection()
         if seleccionado:
             indice=seleccionado[0]
-            del alumnosgg [indice]
+            alumno = alumnosgg.pop(indice)
             listaa.delete(indice)
+            if not guardar_datos():
+                alumnosgg.insert(indice, alumno)
+                listaa.insert(indice, alumno)
     ttk.Button(alumnardos, text="Borrar alumno", command=borrar, bootstyle="warning").pack(padx=13, pady=13)
     ttk.Button(alumnardos, text="Cerrar ventana", command=alumnardos.destroy, bootstyle="secondary").pack()
 
@@ -85,14 +141,20 @@ def configggg():
     ttk.Label(configg, text="Cambiar el nombre de usuario").pack()
     usu_nom=ttk.Entry(configg)
     usu_nom.pack()
+    usu_nom.insert(0, nombre_usuario)
     def Guardarrr():
-        nombre_usuario=usu_nom.get()
-        if nombre_usuario == "":
-            errorsito=Messagebox.show_error( "Ingrese un usuario valido!","Error")
-            errorsito.grab_set()
+        global nombre_usuario
+        usuario_nuevo = usu_nom.get().strip()
+        if usuario_nuevo == "":
+            Messagebox.show_error("Ingrese un usuario valido!", "Error", parent=configg)
         else:
-            maldito_label.config(text=f"Bienvenido al sistema academico, {nombre_usuario}!")
-            configg.destroy()
+            usuario_anterior = nombre_usuario
+            nombre_usuario = usuario_nuevo
+            if guardar_datos():
+                maldito_label.config(text=f"Bienvenido al sistema academico, {nombre_usuario}!")
+                configg.destroy()
+            else:
+                nombre_usuario = usuario_anterior
     def preguntigo():
         respuesta=Messagebox.yesno("estas seguro que queres cerrar la maldita ventana?",text="seguro?", parent=configg)
         if respuesta =="Yes":
