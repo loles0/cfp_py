@@ -8,5 +8,10 @@
         "videojuego": "a",
         "plataforma": "a",
         "precio": "2"
+    },
+    {
+        "videojuego": "FIFA 27",
+        "plataforma": "Playstation 5",
+        "precio": "$60"
     }
 ]
